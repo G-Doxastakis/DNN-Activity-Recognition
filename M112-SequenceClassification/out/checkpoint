@@ -1,0 +1,2 @@
+model_checkpoint_path: "CNN_Phone.chkp"
+all_model_checkpoint_paths: "CNN_Phone.chkp"
