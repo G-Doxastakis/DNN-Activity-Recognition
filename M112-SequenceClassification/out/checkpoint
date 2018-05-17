@@ -1,2 +1,2 @@
-model_checkpoint_path: "CNN_Phone.chkp"
-all_model_checkpoint_paths: "CNN_Phone.chkp"
+model_checkpoint_path: "LSTM_Phone_gyro.chkp"
+all_model_checkpoint_paths: "LSTM_Phone_gyro.chkp"
