@@ -24,6 +24,26 @@ def load(filename, shuffle=False, shuffle_len=1000):
     return data, class_names
 
 
+def loadReduced(filename, shuffle=False, shuffle_len=1000):
+    df = pandas.read_csv(filename)
+
+    #Remove Classes
+    df = df[df['gt'] != 'sit']
+    df = df[df['gt'] != 'stairsdown']
+    df = df[df['gt'] != 'stairsup']
+
+    class_names = df['gt'].astype('category').cat.categories
+    print(class_names)
+    df['User'] = df['User'].astype('category').cat.codes
+    df['gt'] = df['gt'].astype('category').cat.codes #.fillna(4)  # .fillna(6) TODO: Find null class
+    df = df.fillna(0)
+    data = df.values
+    if shuffle:
+        data = data[0:(len(data)//shuffle_len)*shuffle_len, :]
+        data = np.random.permutation(data.reshape((len(data)//shuffle_len, -1, 5))).reshape(-1, 5)
+    return data, class_names
+
+
 def generator(data, idx_range, seq_len):
     while True:
         for i in idx_range:
@@ -31,11 +51,25 @@ def generator(data, idx_range, seq_len):
                    to_categorical(data[i, 4], num_classes=6).reshape(-1, 6))
 
 
+def generatorReduced(data, idx_range, seq_len):
+    while True:
+        for i in idx_range:
+            yield (data[i-seq_len:i, 0:3].reshape((-1, seq_len, 3)),
+                   to_categorical(data[i, 4], num_classes=3).reshape(-1, 3))
+
+
 def randgenerator(data, idx_range, seq_len):
     while True:
         i = np.asscalar(np.random.randint(idx_range.start, idx_range.stop, size=1))
         yield (data[i-seq_len:i, 0:3].reshape((-1, seq_len, 3)),
                to_categorical(data[i, 4], num_classes=6).reshape(-1, 6))
+
+
+def randgeneratorReduced(data, idx_range, seq_len):
+    while True:
+        i = np.asscalar(np.random.randint(idx_range.start, idx_range.stop, size=1))
+        yield (data[i-seq_len:i, 0:3].reshape((-1, seq_len, 3)),
+               to_categorical(data[i, 4], num_classes=3).reshape(-1, 3))
 
 
 def exportmodel(model_name, input_node_name, output_node_name):
@@ -94,6 +128,7 @@ def confusionMatrix(model, generator, nsamples, class_names):
                       title='Normalized confusion matrix')
 
     plt.show()
+
 
 def plot_confusion_matrix(cm, classes,
                           normalize=False,

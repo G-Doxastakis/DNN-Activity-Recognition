@@ -1,2 +1,0 @@
-model_checkpoint_path: "LSTM_Phone_gyro.chkp"
-all_model_checkpoint_paths: "LSTM_Phone_gyro.chkp"
