@@ -11,7 +11,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,7 +19,7 @@ import android.widget.ImageView;
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
-    final int SEQUENCE_LENGTH = 350;
+    final int SEQUENCE_LENGTH = 200;
     final float g = 9.81f;
     private SensorManager mSensorManager;
     private Sensor mSensor;
@@ -47,14 +46,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         });
 
-        inferenceInterface = new TensorFlowInferenceInterface(getAssets(), "tensorflow_lite_CNN_Phone.pb");
+        inferenceInterface = new TensorFlowInferenceInterface(getAssets(), "tensorflow_lite_CNN_Phone_acc.pb");
 
+        /* Full Model
         imageViews[0] = findViewById(R.id.bike);
         imageViews[1] = findViewById(R.id.sit);
         imageViews[2] = findViewById(R.id.stairsdown);
         imageViews[3] = findViewById(R.id.stairsup);
         imageViews[4] = findViewById(R.id.stand);
         imageViews[5] = findViewById(R.id.walk);
+        */
+
+        /* Reduced Model */
+        imageViews[0] = findViewById(R.id.bike);
+        imageViews[1] = findViewById(R.id.stand);
+        imageViews[2] = findViewById(R.id.walk);
+
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
@@ -123,17 +130,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private float[] predictMotion(float[] input, int seqLen){
-        float[] output = new float[6];
+        float[] output = new float[3];
 
         inferenceInterface.feed("conv1d_1_input", input, 1, seqLen, 3);
-        inferenceInterface.run(new String[]{"dense_1/Softmax"});
-        inferenceInterface.fetch("dense_1/Softmax", output);
+        inferenceInterface.run(new String[]{"dense_2/Softmax"});
+        inferenceInterface.fetch("dense_2/Softmax", output);
 
         return output;
     }
 
     private void updateUI(float[] acProb){
-        for (int i=0;i<6;i++){
+        for (int i=0;i<3;i++){
             imageViews[i].setAlpha(acProb[i]);
         }
     }

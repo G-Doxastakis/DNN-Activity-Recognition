@@ -35,5 +35,5 @@ model.fit_generator(generator=motionDataset.randgeneratorReduced(data, idx_train
 scores = model.evaluate_generator(generator=motionDataset.randgeneratorReduced(data, idx_test, sequence_len), steps=25000)
 print("Accuracy: %.2f%%" % (scores[1]*100))
 motionDataset.confusionMatrix(model, motionDataset.randgeneratorReduced(data, idx_test, sequence_len), 25000, class_names)
-model.save('CNN_model_phone_gyro.h5')
+#model.save('CNN_model_phone_acc.h5')
 motionDataset.exportmodel('CNN_Phone_acc','conv1d_1_input','dense_2/Softmax')
