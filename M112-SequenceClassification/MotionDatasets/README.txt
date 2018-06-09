@@ -1,4 +1,5 @@
-The is not included in the repository.
-Download from the provided link, extract the following columns and run the preprocessing scripts for the accelerometer files.
+The dataset is not included in the repository.
+Download Activity recognition exp.zip	from the provided link and extract the PhoneAccelerometer and PhoneGyroscope CSV files, extract the following columns and run the preprocessing scripts for the accelerometer files.
 
-x	y	x	User	gt 
+Columns:
+x	y	z	User	gt 
